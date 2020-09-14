@@ -14,6 +14,7 @@ from imutils import paths
 from torch.utils.data import DataLoader, Dataset
 from torchvision.utils import make_grid
 from tqdm import tqdm
+from typing import Union
 
 
 class MitData(Dataset):
@@ -21,7 +22,7 @@ class MitData(Dataset):
     """Docstring for MitData. """
 
     def __init__(self,
-                 data_dir: str,
+                 data_dir: Union[str, Path],
                  is_train: bool):
         """
         @data_dir: path to the dataset

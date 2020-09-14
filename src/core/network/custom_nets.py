@@ -8,7 +8,7 @@ Description: network architecture for fast image filters
 import torch.nn as nn
 from torchsummary import summary
 
-from basic_blocks import ConvBlock
+from core.network.basic_blocks import ConvBlock
 
 
 class FIP(nn.Module):
