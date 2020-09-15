@@ -49,8 +49,11 @@ class MitData(Dataset):
         img = cv2.imread(str(img_path))
         gt = cv2.imread(str(gt_path))
 
-        img = np.transpose(img, axes=(2, 0, 1))
-        gt = np.transpose(gt, axes=(2, 0, 1))
+        img = np.transpose(img, axes=(2, 0, 1)) / 255.
+        gt = np.transpose(gt, axes=(2, 0, 1)) / 255.
+
+        img = torch.from_numpy(img).float()
+        gt = torch.from_numpy(gt).float()
         return (img, gt)
 
 

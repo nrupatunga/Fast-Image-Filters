@@ -1,15 +1,20 @@
 """
-File: trainer.py
+File: filter_trainer.py
 Author: Nrupatunga
 Email: nrupatunga.s@byjus.com
 Github: https://github.com/nrupatunga
 Description: trainer code
 """
-import torch
 from pathlib import Path
 
+import cv2
+import numpy as np
 import pytorch_lightning as pl
+import torch
+import torchvision
+from torch.nn import functional as F
 from torch.utils.data import DataLoader
+
 from core.dataloaders.mit_dataloader import MitData
 from core.network.custom_nets import FIP
 
@@ -29,7 +34,6 @@ class LitModel(pl.LightningModule):
         """
         super().__init__()
 
-        __import__('pdb').set_trace()
         self.model = FIP()
         self.save_hyperparameters()
 
@@ -43,21 +47,6 @@ class LitModel(pl.LightningModule):
                                    lr=self.hparams.lr,
                                    weight_decay=5e-8,
                                    eps=1e-6)
-
-    def validation_step(self, batch, batch_idx):
-        __import__('pdb').set_trace()
-        x, y = batch
-        y_hat = self(x)
-        loss = y - y_hat
-        loss = 0
-        return {'loss': loss}
-
-    def training_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self(x)
-        loss = y - y_hat
-        loss = 0
-        return {'loss': loss}
 
     def setup(self, stage=None):
 
@@ -94,10 +83,66 @@ class LitModel(pl.LightningModule):
 
         return val_dl
 
+    def _vis_images(self, y, idx, prefix='val'):
+        y_hat_dbg = y.detach().clone()
+        y_hat_dbg = y_hat_dbg[0:10]
+        dbg_imgs = y_hat_dbg.cpu().numpy()
+        for i in range(dbg_imgs.shape[0]):
+            img = dbg_imgs[i]
+            img = np.transpose(img, [1, 2, 0])
+            img = cv2.normalize(img, None, alpha=0, beta=1,
+                                norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+            dbg_imgs[i] = np.transpose(img, [2, 0, 1])
+
+        dbg_imgs = torch.tensor(dbg_imgs)
+
+        grid = torchvision.utils.make_grid(dbg_imgs)
+        if idx == 0:
+            self.logger.experiment.add_image(f'{prefix}_gt', grid,
+                                             self.global_step)
+        elif idx == 1:
+            self.logger.experiment.add_image(f'{prefix}_preds', grid,
+                                             self.global_step)
+        else:
+            self.logger.experiment.add_image(f'{prefix}_input', grid,
+                                             self.global_step)
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self(x)
+        loss = F.mse_loss(y_hat, y, reduction='sum')
+
+        if batch_idx % 250 == 0:
+            self._vis_images(y, 0, prefix='val')
+            self._vis_images(y_hat, 1, prefix='val')
+            self._vis_images(x, 2, prefix='val')
+
+        tf_logs = {'val_loss': loss}
+        return {'loss': loss, 'log': tf_logs}
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self(x)
+        loss = F.mse_loss(y_hat, y, reduction='sum')
+
+        if batch_idx % 250 == 0:
+            self._vis_images(y, 0, prefix='train')
+            self._vis_images(y_hat, 1, prefix='train')
+            self._vis_images(x, 2, prefix='train')
+
+        tf_logs = {'train_loss': loss}
+
+        return {'loss': loss, 'log': tf_logs}
+
+    def validation_epoch_end(self, outputs):
+        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+
+        return {'val_loss': avg_loss}
+
 
 if __name__ == "__main__":
-    data_dir = '/media/nthere/datasets/FastImageProcessing/data/train/set-1/'
+    data_dir = '/media/nthere/datasets/FastImageProcessing/data/'
     model = LitModel(data_dir=data_dir,
                      batch_size=1)
-    trainer = pl.Trainer()
+    trainer = pl.Trainer(gpus=[0])
     trainer.fit(model)
