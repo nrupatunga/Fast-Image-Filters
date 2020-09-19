@@ -1,4 +1,5 @@
 """
+
 File: filter_trainer.py
 Author: Nrupatunga
 Email: nrupatunga.s@byjus.com
@@ -10,6 +11,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint
 import torch
 import torchvision
 from torch.nn import functional as F
@@ -27,7 +29,7 @@ class LitModel(pl.LightningModule):
                  data_dir: str,
                  batch_size: int,
                  num_workers: int = 6,
-                 lr: float = 1e-1,
+                 lr: float = 1e-4,
                  **kwargs) -> None:
         """
         @lr: learning rate
@@ -43,10 +45,9 @@ class LitModel(pl.LightningModule):
         return self.model(x)
 
     def configure_optimizers(self):
-        return torch.optim.Adagrad(self.parameters(),
-                                   lr=self.hparams.lr,
-                                   weight_decay=5e-8,
-                                   eps=1e-6)
+        # eps same as tensorflow adam
+        return torch.optim.Adam(self.parameters(),
+                                lr=self.hparams.lr, eps=1e-7)
 
     def setup(self, stage=None):
 
@@ -62,7 +63,7 @@ class LitModel(pl.LightningModule):
         self.mit_val = MitData(val_dir, is_train=False)
 
     def train_dataloader(self):
-        if self.current_epoch < 155:
+        if self.current_epoch < 120:
             train_dl = DataLoader(self.mit_train_1,
                                   batch_size=self.hparams.batch_size,
                                   shuffle=True,
@@ -90,8 +91,12 @@ class LitModel(pl.LightningModule):
         for i in range(dbg_imgs.shape[0]):
             img = dbg_imgs[i]
             img = np.transpose(img, [1, 2, 0])
-            img = cv2.normalize(img, None, alpha=0, beta=1,
-                                norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            if idx == 1:
+                img = np.clip(img, 0, 1)
+            else:
+                img = cv2.normalize(img, None, alpha=0, beta=1,
+                                    norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
             dbg_imgs[i] = np.transpose(img, [2, 0, 1])
 
         dbg_imgs = torch.tensor(dbg_imgs)
@@ -141,8 +146,14 @@ class LitModel(pl.LightningModule):
 
 
 if __name__ == "__main__":
-    data_dir = '/media/nthere/datasets/FastImageProcessing/data/'
+    data_dir = '/media/nthere/datasets/FastImageProcessing/data/style/'
     model = LitModel(data_dir=data_dir,
                      batch_size=1)
-    trainer = pl.Trainer(gpus=[0])
+    ckpt_cb = ModelCheckpoint(filepath='./style-2/', save_top_k=10,
+                              save_weights_only=False)
+    trainer = pl.Trainer(gpus=[0],
+                         max_epochs=180,
+                         checkpoint_callback=ckpt_cb,
+                         # resume_from_checkpoint='./style/_ckpt_epoch_48.ckpt',
+                         reload_dataloaders_every_epoch=True)
     trainer.fit(model)

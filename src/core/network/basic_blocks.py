@@ -7,6 +7,7 @@ Description: Basic building block for model
 """
 import torch
 import torch.nn as nn
+import numpy as np
 
 
 class AdaptiveBatchNorm2d(nn.Module):
@@ -17,8 +18,8 @@ class AdaptiveBatchNorm2d(nn.Module):
         """Adaptive batch normalization"""
         super().__init__()
         self.bn = nn.BatchNorm2d(num_feat, eps, momentum, affine)
-        self.a = nn.Parameter(torch.FloatTensor(1, 1, 1, 1))
-        self.b = nn.Parameter(torch.FloatTensor(1, 1, 1, 1))
+        self.a = nn.Parameter(torch.ones(1, 1, 1, 1))
+        self.b = nn.Parameter(torch.zeros(1, 1, 1, 1))
 
     def forward(self, x):
         return self.a * x + self.b * self.bn(x)
@@ -53,10 +54,26 @@ class ConvBlock(nn.Module):
                       padding=padding,
                       dilation=dilation),
             nn.LeakyReLU(negative_slope=0.2),
-            norm_layer(out_channels) if norm_layer is not None else nn.Identity()
-        ])
+            norm_layer(out_channels) if norm_layer is not None else nn.Identity()])
 
         self.convblk = nn.Sequential(*convblk)
+        self.init_weights(self.convblk)
+
+    def identity_init(self, shape):
+        array = np.zeros(shape, dtype=float)
+        cx, cy = shape[2] // 2, shape[3] // 2
+        for i in range(np.minimum(shape[0], shape[1])):
+            array[i, i, cx, cy] = 1
+
+        return array
+
+    def init_weights(self, modules):
+        for m in modules:
+            if isinstance(m, nn.Conv2d):
+                weights = self.identity_init(m.weight.shape)
+                with torch.no_grad():
+                    m.weight.copy_(torch.from_numpy(weights).float())
+                torch.nn.init.zeros_(m.bias)
 
     def forward(self, *inputs):
         return self.convblk(inputs[0])

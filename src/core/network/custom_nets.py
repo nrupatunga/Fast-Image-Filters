@@ -5,6 +5,7 @@ Email: nrupatunga.s@byjus.com
 Github: https://github.com/nrupatunga
 Description: network architecture for fast image filters
 """
+import torch
 import torch.nn as nn
 from torchsummary import summary
 
@@ -31,6 +32,8 @@ class FIP(nn.Module):
         self.conv8 = ConvBlock(nbLayers, nbLayers, 3, 1, 1)
         self.conv9 = nn.Conv2d(nbLayers, 3, kernel_size=1, dilation=1)
 
+        self.weights_init(self.conv9)
+
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
@@ -43,6 +46,13 @@ class FIP(nn.Module):
         x = self.conv9(x)
 
         return x
+
+    def weights_init(self, m):
+        """conv2d Init
+        """
+        if isinstance(m, nn.Conv2d):
+            torch.nn.init.xavier_uniform_(m.weight)
+            torch.nn.init.zeros_(m.bias)
 
 
 if __name__ == "__main__":
