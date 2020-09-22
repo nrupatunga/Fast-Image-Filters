@@ -6,6 +6,7 @@ Github: https://github.com/nrupatunga
 Description: mit dataset loaders
 """
 from pathlib import Path
+from typing import Union
 
 import cv2
 import numpy as np
@@ -14,7 +15,6 @@ from imutils import paths
 from torch.utils.data import DataLoader, Dataset
 from torchvision.utils import make_grid
 from tqdm import tqdm
-from typing import Union
 
 
 class MitData(Dataset):

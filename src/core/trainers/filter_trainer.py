@@ -11,9 +11,9 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
 import torch
 import torchvision
+from pytorch_lightning.callbacks import ModelCheckpoint
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 

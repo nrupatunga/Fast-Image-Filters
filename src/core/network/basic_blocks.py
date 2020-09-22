@@ -5,9 +5,9 @@ Email: nrupatunga.s@byjus.com
 Github: https://github.com/nrupatunga
 Description: Basic building block for model
 """
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
 
 
 class AdaptiveBatchNorm2d(nn.Module):

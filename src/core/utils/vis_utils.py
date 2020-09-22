@@ -33,7 +33,8 @@ class Visualizer():
         self.vis.line(Y=y,
                       X=np.array([self.index]),
                       win=title, env=env,
-                      opts=dict(legend=name, title=title, xlabel=xlabel, ylabel=ylabel),
+                      opts=dict(legend=name, title=title,
+                                xlabel=xlabel, ylabel=ylabel),
                       update=None if self.index == 0 else 'append')
 
     def plot_hist(self, d, iters, title='loss', xlabel='iters', ylabel='accuracy'):
@@ -46,7 +47,8 @@ class Visualizer():
         self.vis.line(Y=y,
                       X=np.array([self.index]),
                       win=title,
-                      opts=dict(legend=name, title=title, xlabel=xlabel, ylabel=ylabel),
+                      opts=dict(legend=name, title=title,
+                                xlabel=xlabel, ylabel=ylabel),
                       update=None if self.index == 0 else 'append')
         self.index = iters
 
