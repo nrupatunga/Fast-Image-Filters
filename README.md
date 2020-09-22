@@ -44,3 +44,20 @@ very smaller models
 |Image Filters|
 |------------------------|
 |![](https://github.com/nrupatunga/Fast-Image-Filters/blob/master/src/run/demo/output.gif)|
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+#### Code Setup
+```
+# Clone the repository
+$ git clone https://github.com/nrupatunga/Fast-Image-Filters.git
+
+# install all the required repositories
+$ cd Fast-Image-Filters
+$ pip install -r requirements.txt
+
+# Add current directory to environment
+$ cd src
+$ source settings.sh
+```
