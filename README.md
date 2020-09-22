@@ -65,7 +65,7 @@ $ source settings.sh
 #### Data Download and preparation
 
 Since the author has not released the dataset and dataset preparation
-script, I couldn't share the same here. Please mail [cqf@ust.hk] for the
+script, I couldn't share the same here. Please mail cqf@ust.hk for the
 scripts and data. Feel free to message me for any help you need.
 
 #### Training
