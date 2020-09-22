@@ -18,7 +18,7 @@ PyTorch implementation
 * [App Demo](#app-demo)
 * [Getting Started](#getting-started)
 	- [Code Setup](#code-setup)
-	- [Data Download](#data-download)
+	- [Data Download and Preparation](#data-download)
 	- [Training](#training)
 	- [Testing](#testing)
 
@@ -62,7 +62,7 @@ $ cd src
 $ source settings.sh
 ```
 
-#### Data Download and preparation
+#### Data Download and Preparation
 
 Since the author has not released the dataset and dataset preparation
 script, I couldn't share the same here. Please mail cqf@ust.hk for the
