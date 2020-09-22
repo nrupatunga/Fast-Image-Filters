@@ -61,3 +61,28 @@ $ pip install -r requirements.txt
 $ cd src
 $ source settings.sh
 ```
+
+#### Data Download and preparation
+
+Since the author has not released the dataset and dataset preparation
+script, I couldn't share the same here. Please mail [cqf@ust.hk] for the
+scripts and data. Feel free to message me for any help you need.
+
+#### Training
+```
+$ cd Fast-Image-Filters/src/run/
+
+# Modify the data_dir variable in train.py
+
+# run to train
+$ python train.py
+```
+
+#### Testing
+```
+$ cd Fast-Image-Filters/src/run
+
+# Change the model paths in app.py
+
+$ python app.py
+```
