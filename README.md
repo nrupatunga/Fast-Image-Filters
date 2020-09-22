@@ -35,7 +35,7 @@ This paper shows effectiveness of the following in implementing image
 processing filters
 
 - Fully Convolutional architecture with dilated filters, that leads to
-very smaller models
+better receptive field for image filters and very smaller models
 - Neat trick on Identity weight initialization
 - Simple Mean Square Error loss
 
