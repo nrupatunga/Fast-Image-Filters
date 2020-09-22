@@ -24,7 +24,7 @@ def get_output(ckpt_path, model, gpu=True):
     if gpu:
         output = model(data.cuda()).squeeze().cpu().numpy()
     else:
-        output = model.(data).squeeze().numpy()
+        output = model(data).squeeze().numpy()
 
     output = np.transpose(output, [1, 2, 0])
     output = np.clip(output, 0, 1)
