@@ -86,3 +86,7 @@ $ cd Fast-Image-Filters/src/run
 
 $ python app.py
 ```
+
+## Contact
+
+Email: nrupatunga.tunga@gmail.com
