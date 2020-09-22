@@ -9,8 +9,7 @@ PyTorch implementation
 ·
 <a href="https://github.com/nrupatunga/Fast-Image-Filters/issues">Request Feature</a>
 </p>
-</p>
-
+</p> 
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -39,3 +38,9 @@ processing filters
 very smaller models
 - Neat trick on Identity weight initialization
 - Simple Mean Square Error loss
+
+<!-- APP DEMO-->
+#### App Demo
+|Image Filters|
+|------------------------|
+|![](https://github.com/nrupatunga/Fast-Image-Filters/blob/master/src/run/demo/output.gif)|
