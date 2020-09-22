@@ -40,7 +40,7 @@ very smaller models
 - Simple Mean Square Error loss
 
 <!-- APP DEMO-->
-#### App Demo
+## App Demo
 |Image Filters|
 |------------------------|
 |![](https://github.com/nrupatunga/Fast-Image-Filters/blob/master/src/run/demo/output.gif)|
