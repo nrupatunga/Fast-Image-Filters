@@ -29,6 +29,8 @@ This project is an extension to the previous project
 [here](https://github.com/nrupatunga/pytorch-deaf) on edge aware
 filters.
 
+The link to paper is [here](https://arxiv.org/abs/1709.00643)
+
 ### Description
 
 This paper shows effectiveness of the following in implementing image
