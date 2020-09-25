@@ -15,6 +15,7 @@ from core.trainers.filter_trainer import LitModel
 smooth_ckpt = './ckpt/L0-smoothing/_ckpt_epoch_79.ckpt'
 style_ckpt = './ckpt/Photographic-Style/epoch=138.ckpt'
 pencil_ckpt = './ckpt/Pencil/epoch=138.ckpt'
+tone_ckpt = './ckpt/Multiscale-Tone/epoch=178.ckpt'
 gpu = True
 models = {}
 
@@ -22,7 +23,6 @@ models = {}
 def load_model(ckpt_path):
     """Model load for testing"""
     if gpu:
-        __import__('pdb').set_trace()
         model = LitModel.load_from_checkpoint(ckpt_path).cuda()
     else:
         model = LitModel.load_from_checkpoint(ckpt_path,
@@ -59,11 +59,12 @@ def apply_filter(image, mode):
 
 
 if __name__ == "__main__":
-
-    filter_keys = ['L0-Smoothing', 'Photographic-Style', 'Pencil']
+    filter_keys = ['L0-Smoothing', 'Photographic-Style',
+                   'Multiscale-Tone', 'Pencil']
     models[filter_keys[0]] = load_model(smooth_ckpt)
     models[filter_keys[1]] = load_model(style_ckpt)
-    models[filter_keys[2]] = load_model(pencil_ckpt)
+    models[filter_keys[2]] = load_model(tone_ckpt)
+    models[filter_keys[3]] = load_model(pencil_ckpt)
 
     title = 'Fast Image Filters using CNN'
     description = 'Implementation of image filters using CNN'
